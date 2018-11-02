@@ -31,8 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'members',
-    'posts',
+    # AppConfig클래스를 사용
+    'members.apps.MembersConfig',
+    'posts.apps.PostsConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
