@@ -20,13 +20,15 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # /posts/f로 들어오는 URL은 posts.urls모듈에서 처리
+    # /posts/로 들어오는 URL은 posts.urls모듈에서 처리
     path('posts/', include('posts.urls')),
 ]
 # 하나의 포스트를 만들어서 return을 해주는 역할을 한다.
-# MEDIA_URL로 시작하는 URL은 static()내의 serve()함수를 통해 처
+# MEDIA_URL로 시작하는 URL은 static()내의 serve()함수를 통해 처리
 # MEDIA_ROOT기준으로 파일을 검색함
+# MEDIA가 있어야 MEDIA를 찾아준다 배포된 S3는 자동으로 주소를 정해주지만
+# 로컬에서 작업시에는 자동으로 해주지 않기 때문에 urlpatterns가 필요하다
 urlpatterns += static(
     prefix=settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
+    document_root=settings.MEDIA_ROOT,
 )
