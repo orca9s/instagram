@@ -1,10 +1,12 @@
 from django.db import models
+from django.conf import settings
 
 
 class Post(models.Model):
     author = models.ForeignKey(
-        # <AppName>.<ModelName>
-        'members.User',
+        # 'auth.User'
+        # Django가 기본으로 제공하는 User클래스
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name='작성자',
     )
@@ -30,8 +32,9 @@ class Comment(models.Model):
         verbose_name='포스트',
     )
     author = models.ForeignKey(
-        'members.User',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        verbose_name='작성자',
     )
     content = models.TextField('댓글 내용')
     tags = models.ManyToManyField(

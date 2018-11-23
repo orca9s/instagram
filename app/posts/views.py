@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Post
 from .forms import PostCreateFoem
-from members.models import User
 
 
 def post_list(request):
@@ -26,7 +25,11 @@ def post_create(request):
     #     {% url %} 태그를 사용해서 포스트 생성 으로 링크 걸어주기
     if request.method == 'POST':
         post = Post(
-            author=User.objects.first(),
+            # SessionMiddleware
+            # AuthenticationMiddleware
+            #   를 통해서 request의 user속성
+            #   해당 사용자 인스턴스가 할당
+            author=request.user,
             photo=request.FILES['photo'],
         )
         post.save()
