@@ -13,6 +13,8 @@ def post_list(request):
 
 
 def post_create(request):
+    if not request.user.is_authenticated:
+        return redirect('posts:post-list')
     # 1. posts/post_create.html 구현
     #  form구현
     #   input[type=file]
