@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 from members.forms import LoginForm
@@ -42,4 +42,31 @@ def login_view(request):
             'form': form,
         }
         return render(request, 'members/login.html', context)
+
+
+def logout_view(request):
+    # URL: /members/logout/
+    # Template: 없음
+
+    # !POST 요청일 때만 처리
+    # 처리 완료 후 'posts:post-list'로 이동
+
+    # base.html에 있는 'Logout'버튼이 이 view로의 POST요청을 하도록 함
+    #   -> form을 구현해야 함
+    if request.method == 'POST':
+        logout(request)
+        return redirect('posts:post-list')
+
+
+def signup_view(request):
+    # URL: /members/signup/
+    # Template: members/signup.html
+    # Form:
+    #   SignupForm
+    #       username, password1, password2를 받음
+    # 나머지 요소들은 login.html의 요소를 최대한 재활용
+
+    # GET요청시 해당 템플릿 보여주도록 처리
+    #   base.html에 이쓴 'Signup'버튼이 이 쪽으로 이동할 수 있도록 url
+    pass
 
