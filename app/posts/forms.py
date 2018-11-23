@@ -16,5 +16,9 @@ class PostCreateFoem(forms.Form):
         # 반드시 채워져 있을 필요는 없음
         required=False,
         # HTML랜더링 위젯으로 textarea를 사용
-        widget=forms.TextInput(),
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+            }
+        ),
     )
