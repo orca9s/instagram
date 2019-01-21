@@ -65,3 +65,12 @@ class SignupForm(forms.Form):
             self.fields['password2'].widget.attrs['class'] += ' is-invalid'
             raise forms.ValidationError('비밀번호와 비밀번호 확인이 다릅니다')
         return password2
+
+    def save(self):
+        if self.errors:
+            raise ValueError('폼의 데이터 유효성 검사에 실패 하였습니다.')
+        user = User.objects.create_user(
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password2'],
+        )
+        return user
