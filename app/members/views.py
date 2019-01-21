@@ -64,36 +64,35 @@ def logout_view(request):
 
 
 def signup_view(request):
-    # render하는 경우
-    # 1. POST요청이며 사용자명이 이미 존재할 경우
-    # 2. POST요청이며 비밀번호가 같지 않은 경우
-    # 3. GET요청인 경우
-    # redirect하는 경우
-    # 1. POST요청이며 사용자명이 중복되지 않고 비밀번호가 같은 경우
-
-    context = {
-        'form': SignupForm(),
-    }
+    context = {}
     if request.method == 'POST':
-        # 1. request.POST에 전달된 username, password1, password2를
-        #   각각 해당 이읆의 변수에 할당
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
+        # Django의 Form
+        # 1. HTML위젯 생성
+        # 2. 요청(request)으로부터 데이터를 받는 역할
+        # 3. 받아온 데이터를 유효성 검증
+        # 4. 유효성 검증에 실패한 원인을 출력
 
-        # 이부분이 HttpResponse를 쓰는게 아니라
-        # 실제 유저에게 보여지는 form요소와 함께 오류사항을 알려줄 수 있도록 수정
-        if User.objects.filter(username=username).exists():
-            context['error'] = f'사용자명({username})은 이미 사용중입니다.'
-        elif password1 != password2:
-            context['error'] = '비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.'
-
-        else:
-            # create가 아니라 create_user를 쓰는 이유는 자동으로 password 해싱을 해주기 때문이다.
+        # POST로 전달된 데이터를 확인
+        # 올바르다면 User를 생성하고 post-list화면으로 이동
+        # (is_valid()가 True면 올바르다고 가정)
+        form = SignupForm(request.POST)
+        if form.is_valid():
             user = User.objects.create_user(
-                username=username,
-                password=password1,
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password1'],
             )
             login(request, user)
             return redirect('posts:post-list')
+        # Form이 유효하지 않을 경우,
+        # Bound된 상태로 if-else구문 아래의 render까지 이동
+    else:
+        # GET요청 시 빈 Form을 생성
+        form = SignupForm()
+
+    # GET요청시 또는 POST로 전달된 데이터가 올바르지 않을경우
+    #   signup.html에
+    #   빈 Form 또는 올바르지 않은 데이터에 대한 정보가 포함된
+    #   포함된 Form을 전달해서 동적으로 form을 렌더링
+
+    context['form'] = form
     return render(request, 'members/signup.html', context)
