@@ -33,7 +33,7 @@
 					<a href="#" class="btn btn-outline-secondary">Favorites</a>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="btn btn-outline-secondary">프로
+					<a href="#" class="btn btn-outline-secondary">UserName
                     <!-- 로그인 한 경우에만 username표시 -->
                     {% if user.is_authenticated %}
                         ({{ user.username }})
@@ -53,7 +53,7 @@
 					<a href="{% url 'members:login' %}" class="btn btn-outline-secondary">Login</a>
 				</li>
                 <li class="nav-item">
-					<a href="#" class="btn btn-outline-secondary">Signup</a>
+					<a href="{% url 'members:signup' %}" class="btn btn-outline-secondary">Signup</a>
 				</li>
                 {% endif %}
 			</ul>

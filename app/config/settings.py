@@ -14,7 +14,9 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 ROOT_DIR = os.path.dirname(BASE_DIR)
+
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # 사용자가 업로드한 파일이 저장될 Base디렉토리(settings.MEDIA_URL)
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')

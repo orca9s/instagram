@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from members.forms import LoginForm
+from .forms import LoginForm, SignupForm
 
 
 def login_view(request):
@@ -68,5 +68,12 @@ def signup_view(request):
 
     # GET요청시 해당 템플릿 보여주도록 처리
     #   base.html에 이쓴 'Signup'버튼이 이 쪽으로 이동할 수 있도록 url
-    pass
+    if request.method == 'POST':
+        pass
+    else:
+        form = SignupForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'members/signup.html', context)
 
