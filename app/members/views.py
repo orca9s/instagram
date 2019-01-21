@@ -64,15 +64,16 @@ def logout_view(request):
 
 
 def signup_view(request):
-    # URL: /members/signup/
-    # Template: members/signup.html
-    # Form:
-    #   SignupForm
-    #       username, password1, password2를 받음
-    # 나머지 요소들은 login.html의 요소를 최대한 재활용
+    # render하는 경우
+    # 1. POST요청이며 사용자명이 이미 존재할 경우
+    # 2. POST요청이며 비밀번호가 같지 않은 경우
+    # 3. GET요청인 경우
+    # redirect하는 경우
+    # 1. POST요청이며 사용자명이 중복되지 않고 비밀번호가 같은 경우
 
-    # GET요청시 해당 템플릿 보여주도록 처리
-    #   base.html에 이쓴 'Signup'버튼이 이 쪽으로 이동할 수 있도록 url
+    context = {
+        'form': SignupForm(),
+    }
     if request.method == 'POST':
         # 1. request.POST에 전달된 username, password1, password2를
         #   각각 해당 이읆의 변수에 할당
@@ -80,22 +81,19 @@ def signup_view(request):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
+        # 이부분이 HttpResponse를 쓰는게 아니라
+        # 실제 유저에게 보여지는 form요소와 함께 오류사항을 알려줄 수 있도록 수정
         if User.objects.filter(username=username).exists():
-            return HttpResponse(f'사용자명({username})은 이미 사용중입니다.')
-        if password1 != password2:
-            return HttpResponse('비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.')
-        
-        # create가 아니라 create_user를 쓰는 이유는 자동으로 password 해싱을 해주기 때문이다.
-        user = User.objects.create_user(
-            username=username,
-            password=password1,
-        )
-        login(request, user)
-        return redirect('posts:post-list')
-    else:
-        form = SignupForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'members/signup.html', context)
+            context['error'] = f'사용자명({username})은 이미 사용중입니다.'
+        elif password1 != password2:
+            context['error'] = '비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.'
 
+        else:
+            # create가 아니라 create_user를 쓰는 이유는 자동으로 password 해싱을 해주기 때문이다.
+            user = User.objects.create_user(
+                username=username,
+                password=password1,
+            )
+            login(request, user)
+            return redirect('posts:post-list')
+    return render(request, 'members/signup.html', context)
