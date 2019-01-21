@@ -1,4 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from .forms import LoginForm, SignupForm
@@ -36,6 +39,7 @@ def login_view(request):
         #      세션/쿠키 기반의 로그인과정을 수행, 완료 후 posts:post-list 페이지로 redirect
         # 4-2. 인증에 실패한다면
         #      이 페이지에서 인증에 실패했음을 사용자에게 알려줌
+
     else:
         form = LoginForm()
         context = {
@@ -44,6 +48,7 @@ def login_view(request):
         return render(request, 'members/login.html', context)
 
 
+@login_required
 def logout_view(request):
     # URL: /members/logout/
     # Template: 없음
@@ -69,7 +74,24 @@ def signup_view(request):
     # GET요청시 해당 템플릿 보여주도록 처리
     #   base.html에 이쓴 'Signup'버튼이 이 쪽으로 이동할 수 있도록 url
     if request.method == 'POST':
-        pass
+        # 1. request.POST에 전달된 username, password1, password2를
+        #   각각 해당 이읆의 변수에 할당
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        if User.objects.filter(username=username).exists():
+            return HttpResponse(f'사용자명({username})은 이미 사용중입니다.')
+        if password1 != password2:
+            return HttpResponse('비밀번호와 비밀번호 확인란의 값이 일치하지 않습니다.')
+        
+        # create가 아니라 create_user를 쓰는 이유는 자동으로 password 해싱을 해주기 때문이다.
+        user = User.objects.create_user(
+            username=username,
+            password=password1,
+        )
+        login(request, user)
+        return redirect('posts:post-list')
     else:
         form = SignupForm()
         context = {

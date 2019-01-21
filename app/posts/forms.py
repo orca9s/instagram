@@ -1,7 +1,7 @@
 from django import forms
 
 
-class PostCreateFoem(forms.Form):
+class PostCreateForm(forms.Form):
     photo = forms.ImageField(
         # 이 필드는 파일입력 위젯을 사용
         widget=forms.FileInput(

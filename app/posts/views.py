@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Post
-from .forms import PostCreateFoem
+from .forms import PostCreateForm
 
 
 def post_list(request):
@@ -37,7 +37,7 @@ def post_create(request):
         post.save()
         return redirect('posts:post-list')
     else:
-        form = PostCreateFoem()
+        form = PostCreateForm()
         context = {
             'form': form,
         }
