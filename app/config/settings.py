@@ -44,6 +44,10 @@ STATICFILES_DIRS = [
     STATIC_DIR,
 ]
 
+# login_required 데코레이터에 의해
+# 로그인 페이지로 이동해야 할 때, 그 이동할 URL또는 URL pattern name
+LOGIN_URL = 'members:login'
+
 # Application definition
 
 INSTALLED_APPS = [
