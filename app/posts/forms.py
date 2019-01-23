@@ -30,4 +30,14 @@ class PostCreateForm(forms.Form):
             photo=self.cleaned_data['photo'],
             **kwargs,
         )
+        # 만약에 comment항목이 있다면
+        # 생성한 Post에 연결되는 Comment를 생성
+        #   author = request.user
+        #   post=post가 되도록
+        comment_content = self.cleaned_data.get('comment')
+        if comment_content:
+            post.comments.create(
+                author=post.author,
+                content=comment_content,
+            )
         return post
