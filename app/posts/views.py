@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .models import Post
+from .models import Post, Comment
 from .forms import PostCreateForm
 
 
@@ -43,4 +43,19 @@ def post_create(request):
 
 
 def comment_create(request, post_pk):
-    pass
+    # 1. post_pk에 해당하는 Post객체를 가져와 post변수에 할당
+    # 2. request.POST에 전달된 'content'키의 값을 content변수에 할당
+    # 3. Comment생성
+    #   author: 현재 요청의 User
+    #   post: post_pk에 해당하는 Post객체
+    #   content: request.POST로 전달된 'content'키의 값
+    # 4. posts:post-list로 redirect하기
+    if request.method == 'POST':
+        post = Post.objects.get(pk=post_pk)
+        content = request.POST['content']
+        Comment.objects.create(
+            author=request.user,
+            post=post,
+            content=content,
+        )
+        return redirect('posts:post-list')
