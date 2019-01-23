@@ -11,7 +11,7 @@ class LoginForm(forms.Form):
         self._user = None
 
     username = forms.CharField(
-        # 일반 input[tpye=text]
+        # 일반 input[type=text]
         # form-control css클래스 사용
         #   (bootstrap규칙)
         widget=forms.TextInput(

@@ -61,6 +61,46 @@ class CommentCreateForm(forms.Form):
         )
 
 
+class PostForm(forms.ModelForm):
+    comment = forms.CharField(
+        label='내용',
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': 2,
+            }
+        )
+    )
+    # 일딴은 다른 방법으로 처리 지금 건들기에는 너무 어렵다.
+    # def save(self, *args, **kwargs):
+    #     if 'author' not in kwargs:
+    #         raise  ValueError('PostForm.save()에는 반드시 author항목이 포함되어야 합니다')
+    #     if kwargs.get('commit', True) is False:
+    #         raise ValueError('PostForm은 반드시 commit=True여야 합니다')
+    #     # post인스턴스는 무조건 commit=True(DB에 저장된 모델)상태
+    #     post = super().save(*args, **kwargs)
+    #     comment_content = self.cleaned_data['comment']
+    #     if comment_content:
+    #         post.comments.create(
+    #
+    #         )
+
+
+    class Meta:
+        model = Post
+        fields = [
+            'photo',
+        ]
+        widgets = {
+            'photo': forms.ClearableFileInput(
+                attrs={
+                    'class': 'form-control-file',
+                }
+            )
+        }
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import Post, Comment
-from .forms import PostCreateForm, CommentCreateForm, CommentForm
+from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
 
 
 def post_list(request):
@@ -33,12 +33,22 @@ def post_create(request):
     #     {% url %} 태그를 사용해서 포스트 생성 으로 링크 걸어주기
     context = {}
     if request.method == 'POST':
-        form = PostCreateForm(request.POST, request.FILES)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(author=request.user)
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+
+            # PostForm에 'comment'값이 전달도었다면
+            comment_content = form.cleaned_data['comment']
+            # 위에서 생성한 post에 연결되는 Comment생성
+            post.comments.create(
+                author=request.user,
+                content=comment_content,
+            )
         return redirect('posts:post-list')
     else:
-        form = PostCreateForm()
+        form = PostForm()
     context['form'] = form
     return render(request, 'posts/post_create.html', context)
 
@@ -66,7 +76,7 @@ def comment_create(request, post_pk):
         #     post=post,
         #     author=request.user,
         # )
-        comment = form .save(commit=False)
+        comment = form.save(commit=False)
         comment.author = request.user
         comment.post = post
         comment.save()
