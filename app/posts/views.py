@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import Post, Comment
-from .forms import PostCreateForm
+from .forms import PostCreateForm, CommentCreateForm
 
 
 def post_list(request):
     posts = Post.objects.all()
     context = {
         'posts': posts,
+        'comment_form': CommentCreateForm(),
     }
 
     return render(request, 'posts/post_list.html', context)
@@ -50,12 +51,19 @@ def comment_create(request, post_pk):
     #   post: post_pk에 해당하는 Post객체
     #   content: request.POST로 전달된 'content'키의 값
     # 4. posts:post-list로 redirect하기
-    if request.method == 'POST':
-        post = Post.objects.get(pk=post_pk)
-        content = request.POST['content']
-        Comment.objects.create(
-            author=request.user,
+    # if request.method == 'POST':
+    #     post = Post.objects.get(pk=post_pk)
+    #     content = request.POST['content']
+    #     Comment.objects.create(
+    #         author=request.user,
+    #         post=post,
+    #         content=content,
+    #     )
+    post = Post.objects.get(pk=post_pk)
+    form = CommentCreateForm(request.POST)
+    if form.is_valid():
+        form.save(
             post=post,
-            content=content,
+            author=request.user,
         )
         return redirect('posts:post-list')
