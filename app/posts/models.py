@@ -46,32 +46,41 @@ class Comment(models.Model):
         blank=True,
         verbose_name='해시태그 목록',
     )
+    # Comment의 save()가 호출 될 때,
+    # content의 값을 사용해서 이 필드를 자동으로 채운 후 저장하
+    _html = models.TextField('태그가 HTML화된 댓글 내용', blank=True)
 
     class Meta:
         verbose_name = '댓글'
         verbose_name_plural = f'{verbose_name} 목록'
 
     def save(self, *args, **kwargs):
-        # DB에 변경내역을 기록한 상태
-        super().save(*args, **kwargs)
+        def save_html():
+            # 저장하기 전에 _html필드를 채워야 함 (content값을 사용해서)
+            self._html = re.sub(
+                self.TAG_PATTERN,
+                r'<a href="/explore/tags/\g<tag>/">#\g<tag></a>',
+                self.content,
+            )
 
-        # DB에 Comment저장이 완료된 후,
-        # 자신의 'content'값에서 해시태그 목록을 가져와서
-        # 자신의 'tags'속성 (MTM필드)에 할당
-        tags = [HashTag.objects.get_or_create(name=name)[0]
-                for name in re.findall(self.TAG_PATTERN, self.content)]
-        self.tags.set(tags)
+        def save_tags():
+            # DB에 Comment저장이 완료된 후,
+            # 자신의 'content'값에서 해시태그 목록을 가져와서
+            # 자신의 'tags'속성 (MTM필드)에 할당
+            tags = [HashTag.objects.get_or_create(name=name)[0]
+                    for name in re.findall(self.TAG_PATTERN, self.content)]
+            self.tags.set(tags)
+
+        save_html()
+        super().save(*args, **kwargs)
+        save_tags()
 
     @property
     def html(self):
         # 자신의 content속성값에서
         # #태그명에 해당하는 문자열을
         # #문자열 -> <a href="/explore/tags/태그명/">
-        return re.sub(
-            self.TAG_PATTERN,
-            r'<a href="/explore/tags/\g<tag>/">#\g<tag></a>',
-            self.content,
-               )
+        return self._html
 
 
 class HashTag(models.Model):
