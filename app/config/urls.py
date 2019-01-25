@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from . import views
+from posts.views import tag_post_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
     # path('', views.index, name='index'),
 #   /posts/로 들어오는 URL은 posts.urls모듈에서 처리
     path('posts/', include('posts.urls')),
+    path('explore/tags/<str:tag_name>/', tag_post_list, name='tag-post-list'),
     path('members/', include('members.urls')),
 ]
 # 하나의 포스트를 만들어서 return을 해주는 역할을 한다.

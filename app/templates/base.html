@@ -10,6 +10,22 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
 	<title>Instagram</title>
+    <style>
+        .square {
+
+        }
+        .square:before {
+            content:'';
+            padding: 50% 0;
+            display: inline-block;
+        }
+        .square > .thumbnail {
+            display: block;
+            width: 100%;
+            background-size: cover;
+            background-position: center center;
+        }
+    </style>
 </head>
 <body>
 	<div id="wrap">
