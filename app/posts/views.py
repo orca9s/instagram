@@ -92,3 +92,9 @@ def tag_post_list(request, tag_name):
         'posts': posts,
     }
     return render(request, 'posts/tag_post_list.html', context)
+
+
+def tag_search(request):
+    search_keword = request.GET.get('search_keyword')
+    substituted_keyword = re.sub(r'#|\s+', '', search_keword)
+    return redirect('tag-post-list', substituted_keyword)
