@@ -36,7 +36,6 @@ SECRET_KEY = 'ggqhdmw6&lzanokk+w$h*nu)r8h9s!8h76!fuiag6!$umr4=q2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# AUTH_USER_MODEL = 'members.User'
 
 ALLOWED_HOSTS = []
 
@@ -49,6 +48,7 @@ STATICFILES_DIRS = [
 LOGIN_URL = 'members:login'
 
 # Application definition
+AUTH_USER_MODEL = 'members.User'
 
 INSTALLED_APPS = [
     # AppConfig클래스를사용
