@@ -120,3 +120,10 @@ class UserProfileForm(forms.ModelForm):
             'site',
             'introduce',
         ]
+        widgets = {
+            'email': forms.EmailField(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+        }
