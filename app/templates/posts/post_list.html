@@ -9,7 +9,21 @@
 		<div class="card">
 			<!--작성자 정보를 나타낼 header부분-->
 			<div class="card-header">
-				{{ post.author }}
+                <!--<div style="width: 30px; height: 30px; display: inline-block; vertical-align: middle;">
+                    <a href="#" style="background-image: url('{{ post.author.img_profile.url }}');
+                            display: inline-block;
+                            width: 100%; height: 100%;
+                            background-size: cover;
+                            background-position: center center;
+                            vertical-align: middle;"
+                    class="rounded-circle"></a>
+                </div>-->
+                <span>
+                    <a href="#">
+                        <img src="{{ post.author.img_profile.url }}" style="width: 30px; height: 30px; border-radius: 100%">
+                    </a>
+                </span>
+                <span>{{ post.author }}</span>
 			</div>
 			<!--Card의 본문 부분-->
 			<div class="card-body">
