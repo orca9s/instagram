@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from .forms import LoginForm, SignupForm
+from .forms import LoginForm, SignupForm, UserProfileForm
 
 
 def login_view(request):
@@ -127,3 +127,15 @@ def signup_view(request):
     #   포함된 Form을 전달해서 동적으로 form을 렌더링
     context['form'] = form
     return render(request, 'members/signup.html', context)
+
+
+@login_required
+def profile(request):
+    form = UserProfileForm(instance=request.user)
+    # instance = request.user UserProfielForm이 User모델이랑
+    # 연관이 있는데 User모델 인스턴스를 넣은 것이다. 그내용으로 폼이 우선 채워진다.
+    #
+    context = {
+        'form': form,
+    }
+    return render(request, 'members/profile.html', context)

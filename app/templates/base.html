@@ -49,11 +49,11 @@
 					<a href="#" class="btn btn-outline-secondary">Favorites</a>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="btn btn-outline-secondary">프로필
+					<a href="{% url 'members:profile' %}" class="btn btn-outline-secondary">프로필
                     <!-- 로그인 한 경우에만 username표시 -->
                     {% if user.is_authenticated %}
                         ({{ user.username }})
-                        {% endif %}
+                    {% endif %}
                     </a>
 				</li>
             <!-- 로그인 되어있으면 로그아웃버튼, 아니면 로그인/회원가입 버튼 표시 -->

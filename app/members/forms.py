@@ -91,6 +91,7 @@ class SignupForm(forms.Form):
         return data
 
     def clean_password2(self):
+        # 패스워드가 패스워드 확인과 일치하는지 검사
         password1 = self.cleaned_data['password1']
         password2 = self.cleaned_data['password2']
         if password1 != password2:
@@ -100,6 +101,7 @@ class SignupForm(forms.Form):
         return password2
 
     def save(self):
+        # 모든 유효성 검사에서 통과했다면 저장시켜주고 아닐경우 에러를 작동
         if self.errors:
             raise ValueError('폼의 데이터 유효성 검사에 실패 하였습니다.')
         user = User.objects.create_user(
@@ -110,6 +112,7 @@ class SignupForm(forms.Form):
 
 
 class UserProfileForm(forms.ModelForm):
+    # 유저 프로필
     class Meta:
         model = User
         fields = [
@@ -121,7 +124,35 @@ class UserProfileForm(forms.ModelForm):
             'introduce',
         ]
         widgets = {
-            'email': forms.EmailField(
+            # form 속성을 field로 주면 에러가 발생 field안에 field가 들어가게
+            # 되는 상황이 발생해서 에러가 발생하기 때문에 form에서 정의할때는
+            # EmailInput으로 설정해야함
+            'email': forms.EmailInput(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+            'last_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+            'first_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+            'img_profile': forms.ClearableFileInput(
+                attrs={
+                    'class': 'form-control-file',
+                },
+            ),
+            'site': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                },
+            ),
+            'introduce': forms.Textarea(
                 attrs={
                     'class': 'form-control',
                 },
