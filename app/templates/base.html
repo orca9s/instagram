@@ -48,8 +48,9 @@
 				<li class="nav-item mr-sm-1">
 					<a href="#" class="btn btn-outline-secondary">Favorites</a>
 				</li>
-				<li class="nav-item">
-					<a href="{% url 'members:profile' %}" class="btn btn-outline-secondary">프로필
+				<li class="nav-item mr-sm-1">
+					<a href="{% url 'members:profile' %}" class="btn btn-outline-secondary">
+                        Profile
                     <!-- 로그인 한 경우에만 username표시 -->
                     {% if user.is_authenticated %}
                         ({{ user.username }})
@@ -58,7 +59,7 @@
 				</li>
             <!-- 로그인 되어있으면 로그아웃버튼, 아니면 로그인/회원가입 버튼 표시 -->
                 {% if user.is_authenticated %}
-                <li class="nav-item">
+                <li class="nav-item mr-sm-1">
                     <form action="{% url 'members:logout' %}" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-secondary">Logout</button>
