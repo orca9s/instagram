@@ -131,10 +131,29 @@ def signup_view(request):
 
 @login_required
 def profile(request):
+    # POST요청시에는 현재 로그인한 유저의 값을
+    # POST요청에 담겨운 값을 사용해 수정
+    # 이후 다시 form을 보여줌
+    # GET 요청시에는 현재 로그인한 유저의 값을 가진
+    # form을 보여줌
+    if request.method == 'POST':
+        form = UserProfileForm(
+            request.POST, request.FILES,
+            instance=request.user
+        )
+        # 위의 form은
+        # 기존 데이터가 있고 새로운 데이터가 들어온상태
+        # 새로 들어온 데이터가 form에 적절한지 검사를 해야한다
+        if form.is_valid():
+            form.save()
+            # is_valid()를 통과하고 인스턴스 수정이 완료되면
+            # messages모듈을 사용해서 템플릿에 수정완료 메시를 표시
+
     form = UserProfileForm(instance=request.user)
     # instance = request.user UserProfielForm이 User모델이랑
     # 연관이 있는데 User모델 인스턴스를 넣은 것이다. 그내용으로 폼이 우선 채워진다.
-    #
+    # instance를 사용해서 form을 바운드 시킨다는 것이다.
+    # pk를 받지 않는 이유는 로그인 되어있을 경우에만 작동할 수 있도록 했기 때문
     context = {
         'form': form,
     }
