@@ -50,6 +50,13 @@ LOGIN_URL = 'members:login'
 # Application definition
 AUTH_USER_MODEL = 'members.User'
 
+# 로그인 유지시간이 지나면 자동으로 로그아웃 처리
+SESSION_COOKEI_AGE = 20
+# 로그인 상태에서 사용자가 액션을 취하면 갱신시킬건지?
+SESSION_SAVE_EVERY_REQUEST = True
+# 로그인상태에서 브라우저 종료후 다시 실행시 자동으로 로그아웃 시킴
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 INSTALLED_APPS = [
     # AppConfig클래스를사용
     'members.apps.MembersConfig',
