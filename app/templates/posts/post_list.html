@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div>
@@ -9,18 +10,24 @@
 		<div class="card">
 			<!--작성자 정보를 나타낼 header부분-->
 			<div class="card-header">
-                <!--<div style="width: 30px; height: 30px; display: inline-block; vertical-align: middle;">
-                    <a href="#" style="background-image: url('{{ post.author.img_profile.url }}');
-                            display: inline-block;
-                            width: 100%; height: 100%;
-                            background-size: cover;
-                            background-position: center center;
-                            vertical-align: middle;"
-                    class="rounded-circle"></a>
-                </div>-->
+{#                <!--<div style="width: 30px; height: 30px; display: inline-block; vertical-align: middle;">#}
+{#                    <a href="#" style="background-image: url('{{ post.author.img_profile.url }}');#}
+{#                            display: inline-block;#}
+{#                            width: 100%; height: 100%;#}
+{#                            background-size: cover;#}
+{#                            background-position: center center;#}
+{#                            vertical-align: middle;"#}
+{#                    class="rounded-circle"></a>#}
+{#                </div>-->#}
                 <span>
                     <a href="#">
-                        <img src="{{ post.author.img_profile.url }}" style="width: 30px; height: 30px; border-radius: 100%">
+                        <img src="
+                        {% if post.author.img_profile %}
+                            {{ post.author.img_profile.url }}
+                        {% else %}
+                            {% static 'images/blank_user.png' %}
+                        {% endif %}
+                            " style="width: 30px; height: 30px; border-radius: 100%">
                     </a>
                 </span>
                 <span>{{ post.author }}</span>
