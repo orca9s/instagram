@@ -21,12 +21,12 @@
 {#                </div>-->#}
                 <span>
                     <a href="#">
-                        <img src="
-                        {% if post.author.img_profile %}
-                            {{ post.author.img_profile.url }}
-                        {% else %}
-                            {% static 'images/blank_user.png' %}
-                        {% endif %}
+                        <img src="{{ post.author.img_profile_url }}
+{#                        {% if post.author.img_profile %}#}
+{#                            {{ post.author.img_profile.url }}#}
+{#                        {% else %}#}
+{#                            {% static 'images/blank_user.png' %}#}
+{#                        {% endif %}#}
                             " style="width: 30px; height: 30px; border-radius: 100%">
                     </a>
                 </span>
