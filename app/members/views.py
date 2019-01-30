@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -148,6 +149,14 @@ def profile(request):
             form.save()
             # is_valid()를 통과하고 인스턴스 수정이 완료되면
             # messages모듈을 사용해서 템플릿에 수정완료 메시를 표시
+            # (redirect)를 함에도 불구하고 어떤 메세지를 전달하고 싶다
+            # 그때 message프레임워크를 사용한다
+            # request -> view(messages에 알림데이터와 어떤 client에게 보내야 하는지를 저장)
+            #   django_session테이블에 있는 특정 session_id값과
+            #   클라이언트(브라우저의 쿠키)가 가지고 있는 sessionid값을 비교해서 client를 특정화
+            # -> redirect -> view(이 client에게 message가 있다면, render시 해당 데이터를 함께 context에 담아 전송)
+            # -> render(messages가 전달한 알림데이터를 표시)
+            messages.success(request, '프로필 수정이 완료되었습니다')
 
     form = UserProfileForm(instance=request.user)
     # instance = request.user UserProfielForm이 User모델이랑

@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.contrib import messages
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -83,6 +85,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+# 메세지모듈을 사용해서 태그별로 메세지를 출력할 때
+# 부트스트랩에는 ERROR라는 값이 없고 danger이기 때문에 그것을 바꿔주는 코드
+# 이렇게 해주어야 탬플릿에서 부트스트랩이 적용된다
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
 
 TEMPLATES = [
     {
