@@ -9,6 +9,8 @@
 	<!-- Normalize.css: 브라우저마다 다른 CSS기본 설정값들을 같게 맞춰줌 -->
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+    <!-- Bootstrap jss -->
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 	<title>Instagram</title>
     <style>
         .square {
@@ -24,6 +26,12 @@
             width: 100%;
             background-size: cover;
             background-position: center center;
+        }
+        .messages-container {
+            position: fixed;
+            top: 5px;
+            left: 110px;
+            width: 300px;
         }
     </style>
 </head>
@@ -75,8 +83,19 @@
                 {% endif %}
 			</ul>
 		</nav>
-		{% block content %}
-		{% endblock %}
+        <div class="container-fluid mt-3">
+		    {% block content %}
+		    {% endblock %}
+        </div>
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 	</div>
 </body>
 </html>
