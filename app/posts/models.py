@@ -28,6 +28,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    # 앞에 #(해쉬태그)가 붙은 댓글처리
     TAG_PATTERN = re.compile(r'#(?P<tag>\w+)')
     post = models.ForeignKey(
         Post,
@@ -57,6 +58,7 @@ class Comment(models.Model):
     def save(self, *args, **kwargs):
         def save_html():
             # 저장하기 전에 _html필드를 채워야 함 (content값을 사용해서)
+            # 해쉬태그가 걸린 댓글에 대해서 a태그를 입혀서 다시 저장
             self._html = re.sub(
                 self.TAG_PATTERN,
                 r'<a href="/explore/tags/\g<tag>/">#\g<tag></a>',
