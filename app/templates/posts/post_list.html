@@ -19,6 +19,7 @@
 {#                            vertical-align: middle;"#}
 {#                    class="rounded-circle"></a>#}
 {#                </div>-->#}
+{#                위의 코드는 너무 복잡하여 아래의 프로필 이미지를 출력하는 코드로 변경#}
                 <span>
                     <a href="#">
                         <img src="{{ post.author.img_profile_url }}
@@ -32,9 +33,36 @@
                 </span>
                 <span>{{ post.author }}</span>
 			</div>
+{#                <span>#}
+{#                    <a href="#">#}
+{#                        <img src="{{ post.author.img_profile_url }}" style="width: 30px; height: 30px; border-radius: 100%;">#}
+{#                    </a>#}
+{#                </span>#}
+{#                <span>{{ post.author }}</span>#}
 			<!--Card의 본문 부분-->
 			<div class="card-body">
 				<img src="{{ post.photo.url }}" class="card-img-top">
+                {% if user.is_authenticated %}
+{#                   로그인한 경우에만 버튼이 표시#}
+                    <form action="{% url 'posts:post-like-toggle' post_pk=post.pk %}" method="POST">
+                    {% csrf_token %}
+                        <button class="btn btn-primary btn-sm" type="submit" style="margin-top: 5px;">
+                            {% if user in post.like_users.all %}
+{#                                포스타가 가지고있는 좋아요를 누른 모든 유저 목록에 있다면 좋아요 해제#}
+                                좋아요 해제
+                            {% else %}
+{#                                없는 유저일 경우 좋아요#}
+                                좋아요
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+
+                <div>
+                    <span>이 게시물을 좋아하는 사람</span>
+                    <strong>{{ post.like_users.all|join:", " }}</strong>
+                </div>
+
                 <ul class="list-unstyled">
                     {% for comment in post.comments.all %}
                     <li>
