@@ -33,6 +33,7 @@
                 </span>
                 <span>{{ post.author }}</span>
 			</div>
+
 {#                <span>#}
 {#                    <a href="#">#}
 {#                        <img src="{{ post.author.img_profile_url }}" style="width: 30px; height: 30px; border-radius: 100%;">#}
@@ -41,7 +42,7 @@
 {#                <span>{{ post.author }}</span>#}
 			<!--Card의 본문 부분-->
 			<div class="card-body">
-				<img src="{{ post.photo.url }}" class="card-img-top">
+                <a href="#"><img src="{{ post.photo.url }}" class="card-img-top"></a>
                 {% if user.is_authenticated %}
 {#                   로그인한 경우에만 버튼이 표시#}
                     <form action="{% url 'posts:post-like-toggle' post_pk=post.pk %}" method="POST">
@@ -56,6 +57,12 @@
                             {% endif %}
                         </button>
                     </form>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <form action="{% url 'posts:post-delete' pk=post.pk%}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm">게시물 지우기</button>
+                </form>
                 {% endif %}
 
                 <div>

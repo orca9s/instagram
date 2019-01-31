@@ -1,8 +1,10 @@
 import re
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from .models import Post, Comment, HashTag
 from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
@@ -16,6 +18,25 @@ def post_list(request):
     }
 
     return render(request, 'posts/post_list.html', context)
+
+
+# def post_detail(request):
+#     posts = Post.objects.all()
+#     context = {
+#         'posts': posts,
+#         'comment_form': CommentForm(),
+#     }
+#     return render(request, 'posts/post_detail.html', context)
+
+
+@require_POST
+@login_required
+def post_delete(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    if post.author != request.user:
+        raise PermissionDenied('지울 권환이 없습니다')
+    post.delete()
+    return redirect('posts:post-list')
 
 
 # login_required를 써주면 로그인 되어 있을 경우만 작동
@@ -84,8 +105,8 @@ def comment_create(request, post_pk):
         comment.author = request.user
         comment.post = post
         comment.save()
-
-        return redirect('posts:post-list')
+        url = reverse('posts:post-list')
+        return redirect(url+f'#post-{post_pk}')
 
 
 def tag_post_list(request, tag_name):
