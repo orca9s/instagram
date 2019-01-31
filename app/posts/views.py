@@ -2,6 +2,8 @@ import re
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+
 from .models import Post, Comment, HashTag
 from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
 
@@ -110,6 +112,7 @@ def post_like_toggle(request, post_pk):
     if request.method == 'POST':
         post = get_object_or_404(Post, pk=post_pk)
         post.like_toggle(request.user)
+        url = reverse('posts:post-list')
         # 모델에 like_toggle 함수를 만들어 놓아서 여기서는 가져다 쓰기만하면 된다.
         # 모델에 함수를 따로 만들지 않았으면 여기서 다시 정의해주어야 한다.
-        return redirect('posts:post-list')
+        return redirect(url + f'#post-{post_pk}')
