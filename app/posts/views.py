@@ -1,7 +1,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment, HashTag
 from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
 
@@ -98,3 +98,18 @@ def tag_search(request):
     search_keword = request.GET.get('search_keyword')
     substituted_keyword = re.sub(r'#|\s+', '', search_keword)
     return redirect('tag-post-list', substituted_keyword)
+
+
+def post_like_toggle(request, post_pk):
+    # URL: '/posts/<post_pk>/like-toggle/
+    # URL Name: 'posts:post-like-toggle'
+    # POST method에 대해서만 처리
+
+    # request.user가 post_pk에 해당하는 Post에
+    #   Like Toggle처리
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_pk)
+        post.like_toggle(request.user)
+        # 모델에 like_toggle 함수를 만들어 놓아서 여기서는 가져다 쓰기만하면 된다.
+        # 모델에 함수를 따로 만들지 않았으면 여기서 다시 정의해주어야 한다.
+        return redirect('posts:post-list')
