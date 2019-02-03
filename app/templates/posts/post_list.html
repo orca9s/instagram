@@ -59,7 +59,7 @@
                     </form>
                 {% endif %}
                 {% if user.is_authenticated %}
-                <form action="{% url 'posts:post-delete' pk=post.pk%}" method="POST">
+                <form action="{% url 'posts:post-delete' post_pk=post.pk%}" method="POST">
                     {% csrf_token %}
                     <button class="btn btn-danger btn-sm">게시물 지우기</button>
                 </form>
