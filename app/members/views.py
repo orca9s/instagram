@@ -245,10 +245,19 @@ def facebook_login(request):
     # 문제는 확장자를 모르기 때문에 파이썬이 가지고 있는 모듈을 써서 확장자를 가져와야 한다.
     f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
-    User.objects.create_user(
-        username=facebook_id,
-        first_name=first_name,
-        last_name=last_name,
-        img_profile=f,
-    )
-    return HttpResponse(data)
+    try:
+        user = User.objects.get(username=facebook_id)
+        # update_or_create
+        user.last_name = last_name
+        user.first_name = first_name
+        # user.img_profile = f
+        user.save()
+    except User.DoesNotExist:
+        user = User.objects.create_user(
+            username=facebook_id,
+            first_name=first_name,
+            last_name=last_name,
+            img_profile=f,
+        )
+    login(request, user)
+    return redirect('posts:post-list')
