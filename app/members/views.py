@@ -1,3 +1,5 @@
+import imghdr
+import io
 import json
 from pprint import pprint
 
@@ -6,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -224,13 +227,28 @@ def facebook_login(request):
     first_name = data['first_name']
     last_name = data['last_name']
     url_img_profile = data['picture']['data']['url']
+    # HTTP GET요청의 응답을 받아옴
     img_response = requests.get(url_img_profile)
-    img_response.content
+    img_data = img_response.content
+
+    # 응답의 binary data를 사용해서 In-memory binary stream(file)객체를 생성
+    # 이렇게 안하고 FilleField가 지원한 InMemoryUploadedFille객체를 사용하기!
+    # f = io.BytesIO(img_response.content)
+
+    # 위처럼 안하고 아래 simpleuploaded쓰면 간편히 해결 되지만 파일의 이름을
+    # 꼭 정해주어야 한다.
+
+    # imghdr모듈을 사용해 Image binary data의 확장자를 알아냄
+    ext = imghdr.what('', h=img_data)
+    # Form에서 업로드한 것과 같은 형태의 file-like object생성
+    # 직접 메모리상에서 객체를 만들면 이름이 없기 때문에 이름을 지어 주어야한다.
+    # 문제는 확장자를 모르기 때문에 파이썬이 가지고 있는 모듈을 써서 확장자를 가져와야 한다.
+    f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
     User.objects.create_user(
         username=facebook_id,
         first_name=first_name,
         last_name=last_name,
-        img_profile=img_response.content,
+        img_profile=f,
     )
     return HttpResponse(data)
