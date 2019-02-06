@@ -1,11 +1,17 @@
+import json
+from pprint import pprint
+
+import requests
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from .forms import LoginForm, SignupForm, UserProfileForm
+
+User = get_user_model()
 
 
 def login_view(request):
@@ -167,3 +173,64 @@ def profile(request):
         'form': form,
     }
     return render(request, 'members/profile.html', context)
+
+
+def facebook_login(request):
+    api_base = 'https://graph.facebook.com/v3.2'
+    api_get_access_token = f'{api_base}/oauth/access_token'
+    api_me = f'{api_base}/me'
+    # URL: /members/facebook-login/
+    # URL name: 'members:facebook-login'
+    # request.GET에 전달된 'code'값읋
+    # 그대로 HttpResponse로 출력
+
+    # 페이스북으로부터 받아온 request token
+    code = request.GET.get('code')
+
+    # request token을 access token으로 교환
+    # params를 사용해서 키 밸류 형태의 dict타입으로 보내줌
+    # get요청에 자동으로 뒤에 변형해서 넣도록 하는것 을 requests가 제
+    params = {
+        'client_id': 2546490642059863,
+        'redirect_uri': 'http://localhost:8000/members/facebook-login/',
+        'client_secret': 'd69eca5787244feb528bbc5957885e70',
+        'code': code,
+    }
+
+    response = requests.get(api_get_access_token, params)
+    # 인수로 전달한 문자열이 'JSON'형식일 것으로 생각
+    # json.loads는 전달한 문자열이 JSON형식일 경우, 해당 문자열을 parsing해서 파이썬 Object를 리턴
+    # response_object = json.loads(response.text)
+    # return HttpResponse(response_object)
+    # 위 방식이 아니라 아래의 방식을 사용하면 자동으로 json으로 변역해서
+    # 그 결과를 바로 파이썬 객체로 돌려준다.
+    data = response.json()
+    access_token = data['access_token']
+
+    # access_token을 사용해서 사용자 정보를 가져오기
+    params = {
+        'access_token': access_token,
+        'fields': ','.join([
+            'id',
+            'first_name',
+            'last_name',
+            'picture.type(large)',
+        ]),
+    }
+    response = requests.get(api_me, params)
+    data = response.json()
+
+    facebook_id = data['id']
+    first_name = data['first_name']
+    last_name = data['last_name']
+    url_img_profile = data['picture']['data']['url']
+    img_response = requests.get(url_img_profile)
+    img_response.content
+
+    User.objects.create_user(
+        username=facebook_id,
+        first_name=first_name,
+        last_name=last_name,
+        img_profile=img_response.content,
+    )
+    return HttpResponse(data)
