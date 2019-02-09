@@ -4,6 +4,7 @@ import json
 from pprint import pprint
 
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
@@ -194,9 +195,9 @@ def facebook_login(request):
     # params를 사용해서 키 밸류 형태의 dict타입으로 보내줌
     # get요청에 자동으로 뒤에 변형해서 넣도록 하는것 을 requests가 제
     params = {
-        'client_id': 2546490642059863,
+        'client_id': settings.FACEBOOK_APP_ID,
         'redirect_uri': 'http://localhost:8000/members/facebook-login/',
-        'client_secret': 'd69eca5787244feb528bbc5957885e70',
+        'client_secret': settings.FACEBOOK_APP_SECRET,
         'code': code,
     }
 

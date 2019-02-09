@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -23,7 +23,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # 사용자가 업로드한 파일이 저장될 Base디렉토리(settings.MEDIA_URL)
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-# 유저가 업로드한 파일에 접근하고자 할 때 prfix URL (settings.MEDIA_URL)
+SECRETS_DIR = os.path.join(ROOT_DIR, '.secrets')
+
+# 유저가 업로드한 파일에 접근하고자 할 때 prefix URL (settings.MEDIA_URL)
 # FileField, MediaField의 URL이 아래 설정 기준으로 바
 MEDIA_URL = '/media/'
 
@@ -33,7 +35,7 @@ STATIC_URL = '/static/'
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ggqhdmw6&lzanokk+w$h*nu)r8h9s!8h76!fuiag6!$umr4=q2'
+SECRET_KEY = ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +46,14 @@ ALLOWED_HOSTS = []
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+
+# .secrets/base.json에 있는 내용을 읽어서
+# parsing하여 파이썬 dict객체를 가져와 secrets변수에 할당
+# loads는 문자열을 파싱하겠다는 뜻
+# json.load는 파일객체를 넣을 수 있다. 아래처럼 파일 자체를 불러옴
+secrets = json.load(open(os.path.join(SECRETS_DIR, 'base.json')))
+FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
+FACEBOOK_APP_SECRET = secrets['FACEBOOK_APP_SECRET']
 
 # login_required 데코레이터에 의해
 # 로그인 페이지로 이동해야 할 때, 그 이동할 URL또는 URL pattern name
