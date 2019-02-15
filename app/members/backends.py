@@ -23,7 +23,7 @@ class FacebookBackend:
 
         # request token을 access token으로 교환
         # params를 사용해서 키 밸류 형태의 dict타입으로 보내줌
-        # get요청에 자동으로 뒤에 변형해서 넣도록 하는것 을 requests가 제
+        # get요청에 자동으로 뒤에 변형해서 넣도록 하는것 을 requests가 제공
         params = {
             'client_id': settings.FACEBOOK_APP_ID,
             'redirect_uri': 'http://localhost:8000/members/facebook-login/',
